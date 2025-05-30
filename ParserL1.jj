@@ -1,0 +1,279 @@
+PARSER_BEGIN(Parser)
+
+import java.util.*;
+
+public class Parser {
+}
+
+PARSER_END(Parser)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\r"
+| "\n"
+}
+
+TOKEN :
+{
+
+  < LET : "let" >
+  |
+  < TRUE: "true" >
+  |
+  < FALSE: "false" >
+  |
+  < PLUS : "+" >
+  |
+  < MINUS : "-">
+  |
+  < STAR : "*">
+  |
+  < DIV : "/">
+  |
+  < LPAR : "(" >
+  |
+  < RPAR : ")" >
+  |
+  < LBRA : "{" >
+  |
+  < RBRA : "}" >
+  |
+  < EQUAL : "=" >
+  |
+  < COLON : ":" >
+  |
+  < SEMIC : ";" >
+  |
+  < TERM : ";;" >
+  |
+  < COMMA : "," >
+  |
+  < AND : "&&" >
+  |
+  < OR : "||" >
+  |
+  < EQ : "==" >
+  |  
+  < GT : ">" >
+  |
+  < LT : "<" >
+  |
+  < GTEQ : ">=" >
+  |
+  < LTEQ : "<=" >
+  |
+  < DIF : "!=" >
+  |
+  < NOT : "~" >
+  |
+  < ASSIGN : ":=" >
+  |
+  < BOX : "box" >
+  |
+  < DEREF : "!" >
+  |
+  < IF : "if" >
+  |
+  < ELSE : "else" >
+  |
+  < WHILE : "while" >
+  |
+  < PRINT : "print" >
+  |
+  < PRINTLN : "println" >
+  |
+  < FN : "fn" >
+  |
+  <FATARROW : "=>">
+  |
+  <ARROW : "->">
+  |
+  <NIL : "nil">
+  |
+  <CONS : "::">
+  |
+  <ICONS : ":?">
+  |
+  <BAR : "|">
+  |
+  <MATCH : "match">
+  |
+  < String: "\"" ( (~["\"","\\"]) | ("\\" ( ["n","t","b","r","f","\\","\""] ) ) )* "\"" >
+  |
+  < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
+  |
+  < Num: (["0"-"9"]) + >
+}
+
+ASTNode Start():
+{ ASTNode t; }
+{
+    <EOF> {return null;}
+  | t = Let() <TERM> { return t; }
+}
+
+ASTNode Let() :
+{ Token n; 
+  ASTNode t, e1, e2;
+  List<Bind> decls  = new ArrayList<Bind>();;
+}
+{ 
+    (
+    t = Seq()
+    |
+    ((<LET>  n=<Id>  <EQUAL> e1 = BA() <SEMIC>
+      { decls.add(new Bind(n.image,e1)); }
+     )+
+        e2 = Seq() { t = new ASTLet(decls, e2); })
+    )
+    
+   { return t; }
+}
+
+ASTNode Seq() :
+{Token op;
+  ASTNode t1, t2;}
+{
+     t1 = SeqExp() ( ( op=<SEMIC> ) t2 = SeqExp() 
+ 		 {
+		  t1 = new ASTSeq(t1, t2);
+     } 
+		)*
+     { return t1; }  
+}
+
+ASTNode SeqExp() :
+{Token op;
+  ASTNode t1, t2;}
+{
+     t1 = BA() ( ( op=<ASSIGN> ) t2 = BA() 
+ 		 {
+		  t1 = new ASTAssign(t1, t2);
+     } 
+		)*
+     { return t1; }  
+}
+
+ASTNode BA() :
+{Token op;
+  ASTNode t1, t2;}
+{
+     t1 = BM() ( ( op=<OR> ) t2 = BM() 
+ 		 {
+      t1 = new ASTOr(t1,t2);
+		 } 
+		)*
+     { return t1; } 
+}
+
+ASTNode BM() :
+{Token op;
+  ASTNode t1, t2;}
+{
+     t1 = Rel() ( ( op=<AND> ) t2 = Rel() 
+ 		 {
+      t1 = new ASTAnd(t1,t2);
+ 		 } 
+		)*
+     { return t1; } 
+}
+
+ASTNode Rel() :
+{Token op;
+  ASTNode t1, t2;}
+{
+     t1 = Exp() ( ( op=<EQ> | op=<GT> | op=<LT> | op=<GTEQ> | op=<LTEQ> | op=<DIF>) t2 = Exp() 
+     	  	  { if (op.kind == EQ) 
+                    t1 = new ASTEq(t1,t2);
+              else if (op.kind == GT) 
+                    t1 = new ASTGt(t1,t2);
+              else if (op.kind == LT) 
+                    t1 = new ASTLt(t1,t2);
+              else if (op.kind == GTEQ) 
+                    t1 = new ASTGteq(t1,t2);
+              else if (op.kind == LTEQ) 
+                    t1 = new ASTLteq(t1,t2);
+              else if (op.kind == DIF) 
+                    t1 = new ASTDif(t1,t2);
+		        }
+		)?
+     { return t1; } 
+}
+
+ASTNode Exp() :
+{ Token op;
+  ASTNode t1, t2; }
+{
+     t1=Term() ( ( op=<PLUS> | op=<MINUS> ) t2=Term() 
+                 { if (op.kind == PLUS) 
+                         t1 = new ASTPlus(t1,t2);
+                   else  t1 = new ASTSub(t1,t2);
+                 } 
+               ) *
+     { return t1; } 
+}
+
+ASTNode Term() :
+{Token op;
+  ASTNode t1, t2;}
+{
+     t1 = ConsExp() (
+     	  	 op=<STAR> t2 = ConsExp()   { t1 = new ASTMult(t1,t2); }
+		 |
+		 op=<DIV> t2 = ConsExp()  { t1 = new ASTDiv(t1,t2); }
+     |
+		 op = <LPAR> t2 = Exp () <RPAR>  { t1 = new ASTApp(t1, t2); } 
+		)*
+     { return t1; } 
+}
+
+ASTNode ConsExp() :
+{ ASTNode t1, t2; }
+{
+    t1 = Fact() (
+        <CONS> t2 = ConsExp() { t1 = new ASTCons(t1, t2); }
+      | <ICONS> t2 = ConsExp() { t1 = new ASTIcons(t1, t2); }
+    )?
+    { return t1; }
+}
+
+ASTNode Fact() :
+{ Token n, n1, n2; 
+  ASTNode t, e1, e2, a;
+  List<Bind> decls;
+  ASTNode body, alt;
+}
+{
+   (
+      n=<Num> { t = new ASTInt(Integer.parseInt(n.image)); } 
+    | n=<TRUE> { t = new ASTBool(true); }
+    | n=<FALSE> { t = new ASTBool(false); }
+    | n=<NIL> { t = new ASTNil(); }
+    | n=<Id> { t = new ASTId(n.image); } 
+    | <BOX> t=Fact() { t = new ASTBox(t); }
+    | <DEREF> t=Fact() { t = new ASTDeref(t); }
+    | <MINUS> t=Fact() { t = new ASTNeg(t); }
+    | <NOT> t=Fact() { t = new ASTNot(t); }
+    | <IF> t=BA() <LBRA> e1=Let() <RBRA> <ELSE> <LBRA> e2=Let() <RBRA> { t = new ASTIf(t, e1, e2); }
+    | <WHILE> t=BA() <LBRA> body=Let() <RBRA> { t = new ASTWhile(t, body); }
+    | <FN>
+      n=<Id> { List<String> args = new ArrayList<>(); args.add(n.image); }
+      ( <COMMA> n=<Id> { args.add(n.image); } )*
+      <FATARROW> <LBRA> e2=Let() <RBRA>
+      {
+        t = e2;
+        for (int i = args.size() - 1; i >= 0; i--) {
+            t = new ASTFun(args.get(i), t);
+        }
+      }
+    | <PRINT> t=Fact() { t = new ASTPrint(t);  }
+    | <PRINTLN> t=Fact() { t = new ASTPrintln(t);  }
+    | <LPAR> t=Let() <RPAR>
+    | <MATCH> t=Let() <LBRA> <NIL> <ARROW> e1=Let() <BAR>
+      n1=<Id> <CONS> n2=<Id> <ARROW> e2=Let() <RBRA>
+      { t = new ASTMatch(t, e1, n1.image, n2.image, e2); }
+    )
+   { return t; }
+}
