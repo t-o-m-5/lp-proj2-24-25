@@ -11,91 +11,113 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int LET = 5;
   /** RegularExpression Id. */
-  int TRUE = 6;
+  int TYPE = 6;
   /** RegularExpression Id. */
-  int FALSE = 7;
+  int TRUE = 7;
   /** RegularExpression Id. */
-  int PLUS = 8;
+  int FALSE = 8;
   /** RegularExpression Id. */
-  int MINUS = 9;
+  int PLUS = 9;
   /** RegularExpression Id. */
-  int STAR = 10;
+  int MINUS = 10;
   /** RegularExpression Id. */
-  int DIV = 11;
+  int STAR = 11;
   /** RegularExpression Id. */
-  int LPAR = 12;
+  int DIV = 12;
   /** RegularExpression Id. */
-  int RPAR = 13;
+  int LPAR = 13;
   /** RegularExpression Id. */
-  int LBRA = 14;
+  int RPAR = 14;
   /** RegularExpression Id. */
-  int RBRA = 15;
+  int LBRA = 15;
   /** RegularExpression Id. */
-  int EQUAL = 16;
+  int RBRA = 16;
   /** RegularExpression Id. */
-  int COLON = 17;
+  int EQUAL = 17;
   /** RegularExpression Id. */
-  int SEMIC = 18;
+  int DOT = 18;
   /** RegularExpression Id. */
-  int TERM = 19;
+  int COLON = 19;
   /** RegularExpression Id. */
-  int COMMA = 20;
+  int SEMIC = 20;
   /** RegularExpression Id. */
-  int AND = 21;
+  int TERM = 21;
   /** RegularExpression Id. */
-  int OR = 22;
+  int COMMA = 22;
   /** RegularExpression Id. */
-  int EQ = 23;
+  int AND = 23;
   /** RegularExpression Id. */
-  int GT = 24;
+  int OR = 24;
   /** RegularExpression Id. */
-  int LT = 25;
+  int EQ = 25;
   /** RegularExpression Id. */
-  int GTEQ = 26;
+  int GT = 26;
   /** RegularExpression Id. */
-  int LTEQ = 27;
+  int LT = 27;
   /** RegularExpression Id. */
-  int DIF = 28;
+  int GTEQ = 28;
   /** RegularExpression Id. */
-  int NOT = 29;
+  int LTEQ = 29;
   /** RegularExpression Id. */
-  int ASSIGN = 30;
+  int DIF = 30;
   /** RegularExpression Id. */
-  int BOX = 31;
+  int NOT = 31;
   /** RegularExpression Id. */
-  int DEREF = 32;
+  int ASSIGN = 32;
   /** RegularExpression Id. */
-  int IF = 33;
+  int BOX = 33;
   /** RegularExpression Id. */
-  int ELSE = 34;
+  int DEREF = 34;
   /** RegularExpression Id. */
-  int WHILE = 35;
+  int IF = 35;
   /** RegularExpression Id. */
-  int PRINT = 36;
+  int ELSE = 36;
   /** RegularExpression Id. */
-  int PRINTLN = 37;
+  int WHILE = 37;
   /** RegularExpression Id. */
-  int FN = 38;
+  int PRINT = 38;
   /** RegularExpression Id. */
-  int FATARROW = 39;
+  int PRINTLN = 39;
   /** RegularExpression Id. */
-  int ARROW = 40;
+  int FN = 40;
   /** RegularExpression Id. */
-  int NIL = 41;
+  int FATARROW = 41;
   /** RegularExpression Id. */
-  int CONS = 42;
+  int ARROW = 42;
   /** RegularExpression Id. */
-  int ICONS = 43;
+  int NIL = 43;
   /** RegularExpression Id. */
-  int BAR = 44;
+  int CONS = 44;
   /** RegularExpression Id. */
-  int MATCH = 45;
+  int ICONS = 45;
   /** RegularExpression Id. */
-  int String = 46;
+  int BAR = 46;
   /** RegularExpression Id. */
-  int Id = 47;
+  int MATCH = 47;
   /** RegularExpression Id. */
-  int Num = 48;
+  int INT = 48;
+  /** RegularExpression Id. */
+  int UNIT = 49;
+  /** RegularExpression Id. */
+  int BOOL = 50;
+  /** RegularExpression Id. */
+  int STRING = 51;
+  /** RegularExpression Id. */
+  int LIST = 52;
+  /** RegularExpression Id. */
+  int REF = 53;
+  /** RegularExpression Id. */
+  int UNION = 54;
+  /** RegularExpression Id. */
+  int STRUCT = 55;
+  /** RegularExpression Id. */
+  int ANY = 56;
+  /** RegularExpression Id. */
+  int String = 57;
+  /** RegularExpression Id. */
+  int Id = 58;
+  /** RegularExpression Id. */
+  int Num = 59;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -108,6 +130,7 @@ public interface ParserConstants {
     "\"\\r\"",
     "\"\\n\"",
     "\"let\"",
+    "\"type\"",
     "\"true\"",
     "\"false\"",
     "\"+\"",
@@ -119,6 +142,7 @@ public interface ParserConstants {
     "\"{\"",
     "\"}\"",
     "\"=\"",
+    "\".\"",
     "\":\"",
     "\";\"",
     "\";;\"",
@@ -148,6 +172,15 @@ public interface ParserConstants {
     "\":?\"",
     "\"|\"",
     "\"match\"",
+    "\"int\"",
+    "\"()\"",
+    "\"bool\"",
+    "\"string\"",
+    "\"list\"",
+    "\"ref\"",
+    "\"union\"",
+    "\"struct\"",
+    "\"_\"",
     "<String>",
     "<Id>",
     "<Num>",

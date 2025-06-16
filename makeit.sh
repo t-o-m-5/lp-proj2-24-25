@@ -1,5 +1,5 @@
 #!/bin/sh
 
 rm *.class
-javacc ParserL1.jj
+javacc ParserX++.jj
 javac *.java

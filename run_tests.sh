@@ -1,7 +1,7 @@
 #!/bin/sh
 
-for f in tests/*.l1; do
+for f in tests/*.xpp; do
     echo "Running $f"
-    java L1int < "$f"
+    java Xint < "$f"
 done
 

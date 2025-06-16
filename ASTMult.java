@@ -2,6 +2,22 @@ public class ASTMult implements ASTNode {
 
     ASTNode lhs, rhs;
 
+    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError, InterpreterError {
+        ASTType t1 = lhs.typecheck(e);
+        t1 = TypeUtils.resolveType(t1, e);
+        if (t1 instanceof ASTTInt) {
+            ASTType t2 = rhs.typecheck(e);
+            t2 = TypeUtils.resolveType(t2, e);
+            if (t2 instanceof ASTTInt) {
+                return t1;
+            } else {
+                throw new TypeCheckError("* operator: type int expected, found "+t2.toStr());
+            }
+        } else {
+            throw new TypeCheckError("* operator: type int expected, found "+t1.toStr());
+        }
+    }
+
     public IValue eval(Environment<IValue> e) throws InterpreterError {
         IValue v1 = lhs.eval(e);
         IValue v2 = rhs.eval(e);

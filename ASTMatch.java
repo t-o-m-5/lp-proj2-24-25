@@ -2,6 +2,29 @@ public class ASTMatch implements ASTNode {
     ASTNode lst, b1, b2;
     String head, tail;
 
+    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError, InterpreterError {
+        ASTType tl = lst.typecheck(e);
+        tl = TypeUtils.resolveType(tl, e);
+        ASTType tb1 = b1.typecheck(e);
+        tb1 = TypeUtils.resolveType(tb1, e);
+        if (tl instanceof ASTTList) {
+            ASTType tlElt = ((ASTTList)tl).getElt();
+            tlElt = TypeUtils.resolveType(tlElt, e);
+            Environment<ASTType> en = e.beginScope();
+            en.assoc(head, tlElt);
+            en.assoc(tail, tl);
+            ASTType tb2 = b2.typecheck(en);
+            tb2 = TypeUtils.resolveType(tb2, e);
+            if (tb1.equals(tb2, en)) {
+                return tb1;
+            } else {
+                throw new TypeCheckError("match operator: expected same types on both branches, found "+tb1.toStr()+" "+tb2.toStr());
+            }
+        } else {
+            throw new TypeCheckError("match operator: type list expected, found "+tl.toStr());
+        }
+    }
+
     public IValue eval(Environment<IValue> e) throws InterpreterError {
         IValue list = lst.eval(e);
         

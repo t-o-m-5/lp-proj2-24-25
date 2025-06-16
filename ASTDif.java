@@ -2,6 +2,18 @@ public class ASTDif implements ASTNode {
 
     ASTNode lhs, rhs;
 
+    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError, InterpreterError {
+        ASTType t1 = lhs.typecheck(e);
+        t1 = TypeUtils.resolveType(t1, e);
+        ASTType t2 = rhs.typecheck(e);
+        t2 = TypeUtils.resolveType(t2, e);
+        if ((t1 instanceof ASTTBool && t2 instanceof ASTTBool) || (t1 instanceof ASTTInt && t2 instanceof ASTTInt)) {
+            return new ASTTBool();
+        } else {
+            throw new TypeCheckError("!= operator: two types bool or two types int expected, found "+t1.toStr()+" "+t2.toStr());
+        }
+    }
+
     public IValue eval(Environment<IValue> e) throws InterpreterError { 
 		IValue v1 = lhs.eval(e);
         IValue v2 = rhs.eval(e);

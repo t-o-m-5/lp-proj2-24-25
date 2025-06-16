@@ -1,6 +1,16 @@
 public class ASTWhile implements ASTNode {
     ASTNode cond, body;
 
+    public ASTType typecheck(Environment<ASTType> e) throws TypeCheckError, InterpreterError {
+        ASTType tc = cond.typecheck(e);
+        tc = TypeUtils.resolveType(tc, e);
+        if (tc instanceof ASTTBool) {
+            return body.typecheck(e);
+        } else {
+            throw new TypeCheckError("while operator: type bool expected in condition, found "+tc.toStr());
+        }
+    }
+
     public IValue eval(Environment<IValue> e) throws InterpreterError {
         IValue res = new VBool(false), c = cond.eval(e);
         while (true) {

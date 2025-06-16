@@ -1,8 +1,8 @@
-To compile the L1++ interpreter:
+To compile the X++ interpreter:
 ```./makeit.sh```
 
-To run the L1++ interpreter:
-```java L1int```
+To run the X++ interpreter:
+```./x++.sh```
 
-To run tests for the L1++ interpreter:
+To run tests for the X++ interpreter:
 ```./run_tests.sh```
