@@ -122,6 +122,8 @@ TOKEN :
   |
   <ANY  : "_">
   |
+  <LABEL  : "#">
+  |
   < String: "\"" ( (~["\"","\\"]) | ("\\" ( ["n","t","b","r","f","\\","\""] ) ) )* "\"" >
   |
   < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
@@ -258,7 +260,7 @@ ASTNode Term() :
 		 |
 		 op=<DIV> t2 = Fact()  { t1 = new ASTDiv(t1,t2); }
      |
-		 op=<DOT> op = <Id>  { /* to be done field selection */ ; }
+		 op=<DOT> op=<LABEL> t2 = <Id>  { t1 = new ASTFieldSelect(t1,t2.image); }
 		 |
 		 op = <LPAR> t2 = Let ()
 		      <RPAR> { t1 = new ASTApp(t1,t2); } 
